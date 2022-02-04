@@ -1,7 +1,7 @@
 param environmentName string
 param location string = resourceGroup().location
 param revisionMode string = 'Single'
-
+param imageName string
 
 resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
   name: 'todoapi'
@@ -18,16 +18,15 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
       
     }
     template: {
-      revisionSuffix: 'green'
       containers: [
         {
-          image: ' melzayet/containerapps-api:v0.1'
-          name: 'httpapi'                     
+          image: imageName
+          name: 'todoapi'                     
         }
       ]
       scale: {
-        minReplicas: 1
-        maxReplicas: 2
+        minReplicas: 2
+        maxReplicas: 3
         rules: [
           {
             name: 'httpscalingrule'

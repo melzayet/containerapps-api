@@ -43,6 +43,9 @@ jobs:
     needs: build
     
     steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -52,8 +55,5 @@ jobs:
       - name: Deploy to containerapp
         uses: azure/CLI@v1
         with:
-          inlineScript: |
-            echo "Installing containerapp extension"
-            az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
-            echo "Starting Deploying"
-            az containerapp update -n todoapi -g ca-vwnqr-rg -i melzayet/todoapi:${{ github.sha }} --debug
+          inlineScript: |            
+            az deployment group create -g  ca-vwnqr-rg  --template-file templates\appresources.bicep --parameters imageName=melzayet/todoapi:${{ github.sha }}
