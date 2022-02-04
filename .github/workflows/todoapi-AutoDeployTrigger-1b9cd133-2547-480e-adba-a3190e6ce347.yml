@@ -55,6 +55,5 @@ jobs:
       - name: Deploy to containerapp
         uses: azure/CLI@v1
         with:
-          inlineScript: |            
-            ls          
-            az deployment group create -g  ca-vwnqr-rg  --template-file templates/appresources.bicep --parameters imageName=melzayet/todoapi:${{ github.sha }}
+          inlineScript: |                        
+            az deployment group create -g ca-vwnqr-rg  --template-file templates/appresources.bicep --parameters environmentName=ca-vwnqr-env imageName=melzayet/todoapi:${{ github.sha }}
