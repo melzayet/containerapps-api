@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: melzayet/todoapi:${{ github.sha }}
+          tags: ${{ secrets.REGISTRY_USERNAME }}/todoapi:${{ github.sha }}
           context: "{{defaultContext}}:TodoApi"
 
 
@@ -56,4 +56,4 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |                        
-            az deployment group create -g ${{ secrets.TODO_RG }}  --template-file templates/appresources.bicep --parameters environmentName=${{ secrets.CA_ENV }} imageName=melzayet/todoapi:${{ github.sha }}
+            az deployment group create -g ${{ secrets.TODO_RG }}  --template-file templates/appresources.bicep --parameters environmentName=${{ secrets.CA_ENV }} imageName=${{ secrets.DOCKER_HUB_USER }}/todoapi:${{ github.sha }}
