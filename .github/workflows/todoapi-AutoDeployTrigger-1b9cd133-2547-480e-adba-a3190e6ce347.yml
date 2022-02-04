@@ -56,4 +56,5 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |            
-            az deployment group create -g  ca-vwnqr-rg  --template-file templates\appresources.bicep --parameters imageName=melzayet/todoapi:${{ github.sha }}
+            ls          
+            az deployment group create -g  ca-vwnqr-rg  --template-file templates/appresources.bicep --parameters imageName=melzayet/todoapi:${{ github.sha }}
