@@ -1,11 +1,14 @@
+using Dapr.Actors;
+using Dapr.Actors.Client;
 using Microsoft.EntityFrameworkCore;
+using MyActor.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Please call /todoitems");
 
 app.MapGet("/todoitems", async (TodoDb db) =>
     await db.Todos.ToListAsync());
@@ -13,16 +16,45 @@ app.MapGet("/todoitems", async (TodoDb db) =>
 app.MapGet("/todoitems/complete", async (TodoDb db) =>
     await db.Todos.Where(t => t.IsComplete).ToListAsync());
 
-app.MapGet("/todoitems/{id}", async (int id, TodoDb db) =>
-    await db.Todos.FindAsync(id)
-        is Todo todo
-            ? Results.Ok(todo)
-            : Results.NotFound());
+app.MapGet("/todoitems/actors/{id}", async (string id, TodoDb db) => {
+    var actorType = "TaskActor";
+    // An ActorId uniquely identifies an actor instance
+    // If the actor matching this id does not exist, it will be created
+    var actorId = new ActorId(id);
 
+    // Create the local proxy by using the same interface that the service implements.    
+    var proxy = ActorProxy.Create<IMyActor>(actorId, actorType);
+
+    TaskData data = await proxy.GetDataAsync();
+        
+    Results.Ok(data);
+    
+
+});
+
+app.MapGet("/todoitems/{id}", async (int id, TodoDb db) => {
+    if (await db.Todos.FindAsync(id) is Todo todo){        
+        Results.Ok(todo);
+    }
+    Results.NotFound();            
+});
 app.MapPost("/todoitems", async (Todo todo, TodoDb db) =>
 {
-    db.Todos.Add(todo);
+    db.Todos.Add(todo);        
     await db.SaveChangesAsync();
+
+    var actorType = "TaskActor";
+
+    // An ActorId uniquely identifies an actor instance
+    // If the actor matching this id does not exist, it will be created
+    var actorId = new ActorId(todo.Owner);
+
+    // Create the local proxy by using the same interface that the service implements.    
+    var proxy = ActorProxy.Create<IMyActor>(actorId, actorType);
+
+    // Now you can use the actor interface to call the actor's methods.
+    
+    await proxy.SetDataAsync(todo.Id.ToString());
 
     return Results.Created($"/todoitems/{todo.Id}", todo);
 });
@@ -35,6 +67,7 @@ app.MapPut("/todoitems/{id}", async (int id, Todo inputTodo, TodoDb db) =>
 
     todo.Name = inputTodo.Name;
     todo.IsComplete = inputTodo.IsComplete;
+    todo.Owner = inputTodo.Owner;
 
     await db.SaveChangesAsync();
 
@@ -59,6 +92,7 @@ class Todo
 {
     public int Id { get; set; }
     public string? Name { get; set; }
+    public string? Owner { get; set; }
     public bool IsComplete { get; set; }
 }
 

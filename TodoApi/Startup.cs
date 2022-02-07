@@ -12,7 +12,7 @@ namespace MyActorService
             services.AddActors(options =>
             {
                 // Register actor types and configure actor settings
-                options.Actors.RegisterActor<MyActor>();
+                options.Actors.RegisterActor<TaskActor>();
             });
         }
 

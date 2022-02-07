@@ -5,24 +5,25 @@ namespace MyActor.Interfaces
 {
     public interface IMyActor : IActor
     {       
-        Task<string> SetDataAsync(MyData data);
-        Task<MyData> GetDataAsync();
+        Task<string> SetDataAsync(string data);
+        Task<TaskData> GetDataAsync();
         Task RegisterReminder();
         Task UnregisterReminder();
         Task RegisterTimer();
         Task UnregisterTimer();
     }
 
-    public class MyData
+    public class TaskData
     {
-        public string? PropertyA { get; set; }
-        public string? PropertyB { get; set; }
+        public int? TasksCount { get; set; }
+        public string? LastTaskId { get; set; }
 
         public override string ToString()
         {
-            var propAValue = this.PropertyA == null ? "null" : this.PropertyA;
-            var propBValue = this.PropertyB == null ? "null" : this.PropertyB;
-            return $"PropertyA: {propAValue}, PropertyB: {propBValue}";
+            var tasksCount = this.TasksCount == null ? 0 : this.TasksCount;
+            var lastTaskId = this.LastTaskId == "" ? "-" : this.LastTaskId;
+
+            return $"TasksCount: {tasksCount}, LastTaskId: {lastTaskId}";
         }
     }
 }

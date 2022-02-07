@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyActorService
 {
-    internal class MyActor : Actor, IMyActor, IRemindable
+    internal class TaskActor : Actor, IMyActor, IRemindable
     {
         // The constructor must accept ActorHost as a parameter, and can also accept additional
         // parameters that will be retrieved from the dependency injection container
@@ -15,7 +15,7 @@ namespace MyActorService
         /// Initializes a new instance of MyActor
         /// </summary>
         /// <param name="host">The Dapr.Actors.Runtime.ActorHost that will host this actor instance.</param>
-        public MyActor(ActorHost host)
+        public TaskActor(ActorHost host)
             : base(host)
         {
         }
@@ -45,14 +45,16 @@ namespace MyActorService
         /// Set MyData into actor's private state store
         /// </summary>
         /// <param name="data">the user-defined MyData which will be stored into state store as "my_data" state</param>
-        public async Task<string> SetDataAsync(MyData data)
+        public async Task<string> SetDataAsync(string taskId)
         {
+            TaskData savedData = await this.StateManager.GetStateAsync<TaskData>("task_data");
+            int _currentTaskCount =  savedData.TasksCount.HasValue ? savedData.TasksCount.Value : 0;
             // Data is saved to configured state store implicitly after each method execution by Actor's runtime.
             // Data can also be saved explicitly by calling this.StateManager.SaveStateAsync();
             // State to be saved must be DataContract serializable.
-            await this.StateManager.SetStateAsync<MyData>(
-                "my_data",  // state name
-                data);      // data saved for the named state "my_data"
+            await this.StateManager.SetStateAsync<TaskData>(
+                "task_data",  // state name
+                new TaskData(){ TasksCount = _currentTaskCount++, LastTaskId = taskId});      // data saved for the named state "my_data"
 
             return "Success";
         }
@@ -61,10 +63,10 @@ namespace MyActorService
         /// Get MyData from actor's private state store
         /// </summary>
         /// <return>the user-defined MyData which is stored into state store as "my_data" state</return>
-        public Task<MyData> GetDataAsync()
+        public Task<TaskData> GetDataAsync()
         {
             // Gets state from the state store.
-            return this.StateManager.GetStateAsync<MyData>("my_data");
+            return this.StateManager.GetStateAsync<TaskData>("task_data");
         }
 
         /// <summary>
