@@ -2,11 +2,41 @@ using Dapr.Actors;
 using Dapr.Actors.Client;
 using Microsoft.EntityFrameworkCore;
 using MyActor.Interfaces;
+using MyActorService;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
+builder.Services.AddActors(options =>
+            {
+                // Register actor types and configure actor settings
+                options.Actors.RegisterActor<TaskActor>();
+            });
+        
+
 var app = builder.Build();
+
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+app.UseHttpsRedirection();
+        
+
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+    {
+        // Register actors handlers that interface with the Dapr runtime.
+        endpoints.MapActorsHandlers();
+    });
+        
+    
 
 app.MapGet("/", () => "Please call /todoitems");
 
@@ -22,6 +52,7 @@ app.MapGet("/todoitems/actors/{id}", async (string id, TodoDb db) => {
     // If the actor matching this id does not exist, it will be created
     var actorId = new ActorId(id);
 
+    
     // Create the local proxy by using the same interface that the service implements.    
     var proxy = ActorProxy.Create<IMyActor>(actorId, actorType);
 
@@ -38,6 +69,7 @@ app.MapGet("/todoitems/{id}", async (int id, TodoDb db) => {
     }
     Results.NotFound();            
 });
+
 app.MapPost("/todoitems", async (Todo todo, TodoDb db) =>
 {
     db.Todos.Add(todo);        
@@ -103,3 +135,5 @@ class TodoDb : DbContext
 
     public DbSet<Todo> Todos => Set<Todo>();
 }
+
+
