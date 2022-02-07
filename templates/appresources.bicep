@@ -13,7 +13,7 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
       activeRevisionsMode: revisionMode
       ingress: {
         external: true
-        targetPort: 5000
+        targetPort: 80
       }      
       
     }
@@ -41,7 +41,7 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
       dapr: {
         enabled: true      
         appId: 'todoapi'       
-        appPort: 5000 
+        appPort: 80 
       }
     }
   }
