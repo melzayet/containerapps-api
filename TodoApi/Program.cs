@@ -57,9 +57,12 @@ app.MapGet("/todoitems/actors/{id}", async (string id, TodoDb db) => {
     var proxy = ActorProxy.Create<IMyActor>(actorId, actorType);
 
     TaskData data = await proxy.GetDataAsync();
-        
-    Results.Ok(data);
-    
+    if(data != null)
+    {
+        Results.Ok(data);
+    }
+    else
+        Results.NotFound();
 
 });
 

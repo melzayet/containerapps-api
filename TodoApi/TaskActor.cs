@@ -47,7 +47,8 @@ namespace MyActorService
         /// <param name="data">the user-defined MyData which will be stored into state store as "my_data" state</param>
         public async Task<string> SetDataAsync(string taskId)
         {
-            TaskData savedData = await this.StateManager.GetStateAsync<TaskData>("task_data");
+            return "Success";
+            /*TaskData savedData = await this.StateManager.GetStateAsync<TaskData>("task_data");
             int _currentTaskCount =  savedData.TasksCount.HasValue ? savedData.TasksCount.Value : 0;
             // Data is saved to configured state store implicitly after each method execution by Actor's runtime.
             // Data can also be saved explicitly by calling this.StateManager.SaveStateAsync();
@@ -55,8 +56,9 @@ namespace MyActorService
             await this.StateManager.SetStateAsync<TaskData>(
                 "task_data",  // state name
                 new TaskData(){ TasksCount = _currentTaskCount++, LastTaskId = taskId});      // data saved for the named state "my_data"
-
-            return "Success";
+            }
+            
+            return "Success";*/
         }
 
         /// <summary>
