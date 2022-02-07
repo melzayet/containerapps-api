@@ -25,7 +25,7 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
           env: [
             {
               name: 'DAPR_HTTP_PORT'
-              value: 3500
+              value: '3500'
             }            
           ]              
         }
