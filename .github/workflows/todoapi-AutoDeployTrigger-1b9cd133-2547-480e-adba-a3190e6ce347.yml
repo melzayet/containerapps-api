@@ -33,7 +33,8 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.REGISTRY_USERNAME }}/demoactor:${{ github.sha }}
-          file: ./DemoActor/Dockerfile
+          context: ./DemoActor
+          file: ./DemoActor/Dockerfile          
 
   deploy:
     runs-on: ubuntu-latest
