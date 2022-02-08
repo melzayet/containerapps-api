@@ -10,12 +10,12 @@
 			"dockerBuild": {
 				"tag": "containerappsapi:dev",
 				"target": "base",
-				"dockerfile": "${workspaceFolder}/MyActorService/Dockerfile",
+				"dockerfile": "${workspaceFolder}/DemoActor/Dockerfile",
 				"context": "${workspaceFolder}",
 				"pull": true
 			},
 			"netCore": {
-				"appProject": "${workspaceFolder}/MyActorService/MyActorService.csproj"
+				"appProject": "${workspaceFolder}/DemoActor/DemoActor.csproj"
 			}
 		},
 		{
@@ -26,12 +26,12 @@
 			],
 			"dockerBuild": {
 				"tag": "containerappsapi:latest",
-				"dockerfile": "${workspaceFolder}/MyActorService/Dockerfile",
+				"dockerfile": "${workspaceFolder}/DemoActor/Dockerfile",
 				"context": "${workspaceFolder}",
 				"pull": true
 			},
 			"netCore": {
-				"appProject": "${workspaceFolder}/MyActorService/MyActorService.csproj"
+				"appProject": "${workspaceFolder}/DemoActor/DemoActor.csproj"
 			}
 		},
 		{
@@ -42,7 +42,7 @@
 			],
 			"dockerRun": {},
 			"netCore": {
-				"appProject": "${workspaceFolder}/MyActorService/MyActorService.csproj",
+				"appProject": "${workspaceFolder}/DemoActor/DemoActor.csproj",
 				"enableDebugging": true
 			}
 		},
@@ -54,8 +54,44 @@
 			],
 			"dockerRun": {},
 			"netCore": {
-				"appProject": "${workspaceFolder}/MyActorService/MyActorService.csproj"
+				"appProject": "${workspaceFolder}/DemoActor/DemoActor.csproj"
 			}
+		},
+		{
+			"label": "build",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"build",
+				"${workspaceFolder}/DemoActor/DemoActor.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/DemoActor/DemoActor.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "watch",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"watch",
+				"run",
+				"--project",
+				"${workspaceFolder}/DemoActor/DemoActor.csproj"
+			],
+			"problemMatcher": "$msCompile"
 		}
 	]
 }
