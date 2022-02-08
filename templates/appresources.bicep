@@ -75,7 +75,7 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
             metadata: [
               {
                 name: 'url'
-                value: 'https://grworkflow.documents.azure.com:443/'
+                value: 'https://daprstore.documents.azure.com:443/'
               }
               {
                 name: 'masterKey'
@@ -87,7 +87,7 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
               }
               {
                 name: 'collection'
-                value:'daprstore'
+                value:'dapr'
               }
             ]
           }
