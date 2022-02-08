@@ -33,7 +33,7 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.REGISTRY_USERNAME }}/demoactor:${{ github.sha }}
-          context: ./DemoActor
+          context: .
           file: ./DemoActor/Dockerfile          
 
   deploy:
