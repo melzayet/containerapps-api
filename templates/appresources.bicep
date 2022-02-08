@@ -87,7 +87,7 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
               }
               {
                 name: 'collection'
-                value:'dapr'
+                value:'daprstore'
               }
             ]
           }
