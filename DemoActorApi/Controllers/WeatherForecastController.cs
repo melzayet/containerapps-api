@@ -43,16 +43,8 @@ namespace DemoActorApi.Controllers
 
         [HttpPost]
         public async Task<string> SetWeatherData(WeatherForecast weatherForecast)
-        {                 
-            
-            const string storeName = "statestore";
-            const string key = "counter";       
-            var daprClient = new DaprClientBuilder().Build();
-            await daprClient.SaveStateAsync<int>(storeName, key,11);
-
-            var counter = await daprClient.GetStateAsync<int>(storeName, key);
-
-            /*int points =0, highestTemp= 0;
+        {                                     
+            int points =0, highestTemp= 0;
 
             // Create an actor Id.
             var actorId = new ActorId("abc");
@@ -74,9 +66,9 @@ namespace DemoActorApi.Controllers
             };
 
             Console.WriteLine("Making call using actor proxy to save data.");
-            await proxy.SaveData(data);*/
+            await proxy.SaveData(data);
 
-            return counter.ToString();
+            return "success";
         }
 
     }
