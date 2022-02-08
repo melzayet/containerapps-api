@@ -42,7 +42,7 @@ namespace DemoActorApi.Controllers
         [HttpPost]
         public async Task<string> SetWeatherData(WeatherForecast weatherForecast)
         {            
-            int points, highestTemp= 0;
+            int points =0, highestTemp= 0;
 
             // Create an actor Id.
             var actorId = new ActorId("abc");
@@ -52,9 +52,11 @@ namespace DemoActorApi.Controllers
             var proxy = ActorProxy.Create<IDemoActor>(actorId, "DemoActor");
 
             MyData currentData = await proxy.GetData();
-            points = currentData.Points.HasValue ? currentData.Points.Value : 0;
-            if(weatherForecast.TemperatureC > currentData.HighestTemp)
-                highestTemp = weatherForecast.TemperatureC;
+            if(currentData != null){
+                points = currentData.Points.HasValue ? currentData.Points.Value : 0;
+                if(weatherForecast.TemperatureC > currentData.HighestTemp)
+                    highestTemp = weatherForecast.TemperatureC;
+            }
             var data = new MyData()
             {
                 Points = points++,
