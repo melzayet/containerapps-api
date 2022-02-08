@@ -79,7 +79,7 @@ namespace DaprDemoActor
         {
             // This method is invoked when an actor reminder is fired.
             var actorState = await this.StateManager.GetStateAsync<MyData>(StateName);
-            actorState.HighestTemp = $"Reminder triggered at '{DateTime.Now:yyyy-MM-ddTHH:mm:ss}'";
+            actorState.HighestTemp++;
             await this.StateManager.SetStateAsync<MyData>(StateName, actorState);
         }
 

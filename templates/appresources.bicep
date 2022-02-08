@@ -1,7 +1,8 @@
 param environmentName string
 param location string = resourceGroup().location
 param revisionMode string = 'Single'
-param imageName string
+param imageNameActorApi string
+param imageNameActor string
 
 
 resource StorageAccount_Name_resource 'Microsoft.Storage/storageAccounts@2021-01-01' = {
@@ -40,11 +41,11 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
     template: {
       containers: [
         {
-          image: imageName
+          image: imageNameActor
           name: 'demoactor'                   
         }
         {
-          image: '${imageName}api'
+          image: imageNameActorApi
           name: 'demoactorapi'
         }
       ]
