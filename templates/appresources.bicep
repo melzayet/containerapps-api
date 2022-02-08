@@ -5,7 +5,7 @@ param imageName string
 
 
 resource StorageAccount_Name_resource 'Microsoft.Storage/storageAccounts@2021-01-01' = {
-  name: '${environmentName}-storage-account'
+  name: replace('${resourceGroup().name}-dapr-store', '-', '')
   location: location
   sku: {
     name: 'Standard_LRS'    
