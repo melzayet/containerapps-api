@@ -43,7 +43,7 @@ app.MapGet("/todoitems", async (TodoDb db) =>
 app.MapGet("/todoitems/complete", async (TodoDb db) =>
     await db.Todos.Where(t => t.IsComplete).ToListAsync());
 
-app.MapGet("/todoitems/actors/{id}", async (string id, TodoDb db) => {
+app.MapGet("/todoitems/actors/{id}", async (string id, TodoDb db, IActorProxyFactory proxyFactory) => {
     var actorType = "TaskActor";
     // An ActorId uniquely identifies an actor instance
     // If the actor matching this id does not exist, it will be created
@@ -51,7 +51,7 @@ app.MapGet("/todoitems/actors/{id}", async (string id, TodoDb db) => {
 
     
     // Create the local proxy by using the same interface that the service implements.    
-    var proxy = ActorProxy.Create<IMyActor>(actorId, actorType);
+    var proxy = proxyFactory.CreateActorProxy<IMyActor>(actorId, actorType);
 
     TaskData data = await proxy.GetDataAsync();
     if(data != null)
@@ -70,7 +70,7 @@ app.MapGet("/todoitems/{id}", async (int id, TodoDb db) => {
     Results.NotFound();            
 });
 
-app.MapPost("/todoitems", async (Todo todo, TodoDb db) =>
+app.MapPost("/todoitems", async (Todo todo, TodoDb db, IActorProxyFactory proxyFactory) =>
 {
     db.Todos.Add(todo);        
     await db.SaveChangesAsync();
@@ -82,7 +82,7 @@ app.MapPost("/todoitems", async (Todo todo, TodoDb db) =>
     var actorId = new ActorId(todo.Owner);
 
     // Create the local proxy by using the same interface that the service implements.    
-    var proxy = ActorProxy.Create<IMyActor>(actorId, actorType);
+    var proxy = proxyFactory.CreateActorProxy<IMyActor>(actorId, actorType);
 
     // Now you can use the actor interface to call the actor's methods.
     
