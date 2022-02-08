@@ -53,11 +53,17 @@ namespace DemoActorApi.Controllers
             // DemoActor is the type registered with Dapr runtime in the service.
             var proxy = ActorProxy.Create<IDemoActor>(actorId, "DemoActor");
 
-            MyData currentData = await proxy.GetData();
-            if(currentData != null){
-                points = currentData.Points.HasValue ? currentData.Points.Value : 0;
-                if(weatherForecast.TemperatureC > currentData.HighestTemp)
-                    highestTemp = weatherForecast.TemperatureC;
+            try{
+                MyData currentData = await proxy.GetData();
+                if(currentData != null){
+                    points = currentData.Points.HasValue ? currentData.Points.Value : 0;
+                    if(weatherForecast.TemperatureC > currentData.HighestTemp)
+                        highestTemp = weatherForecast.TemperatureC;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
             var data = new MyData()
             {
