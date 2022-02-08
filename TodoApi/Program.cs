@@ -8,16 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-
 builder.Services.AddActors(options =>
-            {
-                // Register actor types and configure actor settings
-                options.Actors.RegisterActor<TaskActor>();
-            });
+{
+    // Register actor types and configure actor settings
+    options.Actors.RegisterActor<TaskActor>();
+});
         
-
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -25,19 +22,17 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 else
-app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
         
 
 app.UseRouting();
 
 app.UseEndpoints(endpoints =>
-    {
-        // Register actors handlers that interface with the Dapr runtime.
-        endpoints.MapActorsHandlers();
-    });
-        
-    
-
+{
+    // Register actors handlers that interface with the Dapr runtime.
+    endpoints.MapActorsHandlers();
+});
+           
 app.MapGet("/", () => "Please call /todoitems");
 
 app.MapGet("/todoitems", async (TodoDb db) =>
