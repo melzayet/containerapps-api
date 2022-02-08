@@ -65,8 +65,8 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
       }
       dapr: {
         enabled: true      
-        appId: 'demoactorapi'       
-        appPort: 5005
+        appId: 'demoactor'       
+        appPort: 5000
         components: [
           {
             name: 'statestore'
