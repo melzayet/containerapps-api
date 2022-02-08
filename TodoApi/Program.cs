@@ -8,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDaprClient();
-Console.WriteLine($"Application Name: {builder.Environment.ApplicationName}");
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 builder.Services.AddActors(options =>
 {
@@ -43,12 +44,13 @@ app.MapGet("/todoitems", async (TodoDb db) =>
 app.MapGet("/todoitems/complete", async (TodoDb db) =>
     await db.Todos.Where(t => t.IsComplete).ToListAsync());
 
-app.MapGet("/todoitems/actors/{id}", async (string id, TodoDb db, IActorProxyFactory proxyFactory) => {
+app.MapGet("/todoitems/actors/{id}", async (string id, TodoDb db, IActorProxyFactory proxyFactory, ILogger logger) => {
     var actorType = "TaskActor";
     // An ActorId uniquely identifies an actor instance
     // If the actor matching this id does not exist, it will be created
     var actorId = new ActorId(id);
-
+    
+    logger.Log(LogLevel.Information, "helloooooooo");
     
     // Create the local proxy by using the same interface that the service implements.    
     var proxy = proxyFactory.CreateActorProxy<IMyActor>(actorId, actorType);
@@ -70,8 +72,10 @@ app.MapGet("/todoitems/{id}", async (int id, TodoDb db) => {
     Results.NotFound();            
 });
 
-app.MapPost("/todoitems", async (Todo todo, TodoDb db, IActorProxyFactory proxyFactory) =>
+app.MapPost("/todoitems", async (Todo todo, TodoDb db, IActorProxyFactory proxyFactory, ILogger logger) =>
 {
+    logger.Log(LogLevel.Information, "helloooooooo");
+    
     db.Todos.Add(todo);        
     await db.SaveChangesAsync();
 
