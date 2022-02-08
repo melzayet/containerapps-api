@@ -25,18 +25,12 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Deploy to containerapp
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |                        
-           ls
-
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: ${{ secrets.REGISTRY_USERNAME }}/demoactor:${{ github.sha }}                    
-          file: "{{defaultContext}}:DemoActor/Dockerfile"
+          context: "{{defaultContext}}:DemoActor"
 
   deploy:
     runs-on: ubuntu-latest
