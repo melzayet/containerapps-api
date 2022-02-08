@@ -35,9 +35,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.REGISTRY_USERNAME }}/demoactor:${{ github.sha }}          
-          context: "{{defaultContext}}"
-          file: "DemoActor/Dockerfile"
+          tags: ${{ secrets.REGISTRY_USERNAME }}/demoactor:${{ github.sha }}                    
+          file: "{{defaultContext}}:DemoActor/Dockerfile"
 
   deploy:
     runs-on: ubuntu-latest
