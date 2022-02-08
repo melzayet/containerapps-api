@@ -35,7 +35,7 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.REGISTRY_USERNAME }}/todoapi:${{ github.sha }}
-          file: "{{defaultContext}}:DemoActor/Dockerfile"          
+          file: "DemoActor/Dockerfile"          
           context: .
 
 
