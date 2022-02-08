@@ -77,21 +77,21 @@ namespace IDemoActorInterface
     public class MyData
     {
         /// <summary>
-        /// Gets or sets the value for PropertyA.
+        /// Gets or sets the value for Points.
         /// </summary>
-        public string PropertyA { get; set; }
+        public int? Points { get; set; }
 
         /// <summary>
-        /// Gets or sets the value for PropertyB.
+        /// Gets or sets the value for HighestTemp.
         /// </summary>
-        public string PropertyB { get; set; }
+        public int? HighestTemp { get; set; }
 
         /// <inheritdoc/>
         public override string ToString()
         {
-            var propAValue = this.PropertyA ?? "null";
-            var propBValue = this.PropertyB ?? "null";
-            return $"PropertyA: {propAValue}, PropertyB: {propBValue}";
+            var propAValue = this.Points ?? 0;
+            var propBValue = this.HighestTemp ?? 0;
+            return $"Points: {propAValue}, HighestTemp: {propBValue}";
         }
     }
 }

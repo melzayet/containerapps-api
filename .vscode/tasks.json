@@ -10,12 +10,12 @@
 			"dockerBuild": {
 				"tag": "containerappsapi:dev",
 				"target": "base",
-				"dockerfile": "${workspaceFolder}/DemoActor/Dockerfile",
+				"dockerfile": "${workspaceFolder}/DemoActorApi/Dockerfile",
 				"context": "${workspaceFolder}",
 				"pull": true
 			},
 			"netCore": {
-				"appProject": "${workspaceFolder}/DemoActor/DemoActor.csproj"
+				"appProject": "${workspaceFolder}/DemoActorApi/DemoActorApi.csproj"
 			}
 		},
 		{
@@ -26,12 +26,12 @@
 			],
 			"dockerBuild": {
 				"tag": "containerappsapi:latest",
-				"dockerfile": "${workspaceFolder}/DemoActor/Dockerfile",
+				"dockerfile": "${workspaceFolder}/DemoActorApi/Dockerfile",
 				"context": "${workspaceFolder}",
 				"pull": true
 			},
 			"netCore": {
-				"appProject": "${workspaceFolder}/DemoActor/DemoActor.csproj"
+				"appProject": "${workspaceFolder}/DemoActorApi/DemoActorApi.csproj"
 			}
 		},
 		{
@@ -42,7 +42,7 @@
 			],
 			"dockerRun": {},
 			"netCore": {
-				"appProject": "${workspaceFolder}/DemoActor/DemoActor.csproj",
+				"appProject": "${workspaceFolder}/DemoActorApi/DemoActorApi.csproj",
 				"enableDebugging": true
 			}
 		},
@@ -54,7 +54,7 @@
 			],
 			"dockerRun": {},
 			"netCore": {
-				"appProject": "${workspaceFolder}/DemoActor/DemoActor.csproj"
+				"appProject": "${workspaceFolder}/DemoActorApi/DemoActorApi.csproj"
 			}
 		},
 		{

@@ -28,7 +28,7 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
       activeRevisionsMode: revisionMode
       ingress: {
         external: true
-        targetPort: 5000
+        targetPort: 5005
       }      
       secrets: [
         {
@@ -41,18 +41,16 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
       containers: [
         {
           image: imageName
-          name: 'todoapi'
-          env: [
-            {
-              name: 'DAPR_HTTP_PORT'
-              value: '3500'
-            }            
-          ]              
+          name: 'demoactor'                   
+        }
+        {
+          image: '${imageName}api'
+          name: 'demoactorapi'
         }
       ]
       scale: {
-        minReplicas: 2
-        maxReplicas: 3
+        minReplicas: 1
+        maxReplicas: 2
         rules: [
           {
             name: 'httpscalingrule'
@@ -62,12 +60,12 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
                   }
               }
           }
-                        ]
+        ]
       }
       dapr: {
         enabled: true      
-        appId: 'todoapi'       
-        appPort: 5000
+        appId: 'demoactorapi'       
+        appPort: 5005
         components: [
           {
             name: 'statestore'

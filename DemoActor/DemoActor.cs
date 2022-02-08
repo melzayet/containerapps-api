@@ -79,7 +79,7 @@ namespace DaprDemoActor
         {
             // This method is invoked when an actor reminder is fired.
             var actorState = await this.StateManager.GetStateAsync<MyData>(StateName);
-            actorState.PropertyB = $"Reminder triggered at '{DateTime.Now:yyyy-MM-ddTHH:mm:ss}'";
+            actorState.HighestTemp = $"Reminder triggered at '{DateTime.Now:yyyy-MM-ddTHH:mm:ss}'";
             await this.StateManager.SetStateAsync<MyData>(StateName, actorState);
         }
 
@@ -124,14 +124,14 @@ namespace DaprDemoActor
 
         /// <summary>
         /// This method is called when the timer is triggered based on its registration.
-        /// It updates the PropertyA value.
+        /// It updates the Points value.
         /// </summary>
         /// <param name="data">Timer input data.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task TimerCallback(byte[] data)
         {
             var state = await this.StateManager.GetStateAsync<MyData>(StateName);
-            state.PropertyA = $"Timer triggered at '{DateTime.Now:yyyyy-MM-ddTHH:mm:s}'";
+            state.Points++;
             await this.StateManager.SetStateAsync<MyData>(StateName, state);
             var timerParams = JsonSerializer.Deserialize<TimerParams>(data);
             Console.WriteLine("Timer parameter1: " + timerParams.IntParam);

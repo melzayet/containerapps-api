@@ -28,11 +28,12 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Build
-        run: |
-          ls
+      - name: Build & Push Images
+        run: |        
           docker build --file DemoActor/Dockerfile -t ${{ secrets.REGISTRY_USERNAME }}/demoactor:${{ github.sha }} .
           docker push ${{ secrets.REGISTRY_USERNAME }}/demoactor:${{ github.sha }}
+          docker build --file DemoActorApi/Dockerfile -t ${{ secrets.REGISTRY_USERNAME }}/demoactorapi:${{ github.sha }} .
+          docker push ${{ secrets.REGISTRY_USERNAME }}/demoactorapi:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
