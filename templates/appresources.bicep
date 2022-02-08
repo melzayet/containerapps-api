@@ -3,7 +3,7 @@ param location string = resourceGroup().location
 param revisionMode string = 'Single'
 param imageNameActorApi string
 param imageNameActor string
-
+param cosmosMasterKey string
 
 resource StorageAccount_Name_resource 'Microsoft.Storage/storageAccounts@2021-01-01' = {
   name: replace('${resourceGroup().name}-dapr-store', '-', '')
@@ -33,8 +33,8 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
       }      
       secrets: [
         {
-          name: 'storage-key'
-          value: '${StorageAccount_Name_resource.listKeys().keys[0].value}'
+          name: 'master-key'
+          value: cosmosMasterKey
         }
       ]        
     }
@@ -70,20 +70,24 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
         components: [
           {
             name: 'statestore'
-            type: 'state.azure.blobstorage'
+            type: 'state.azure.cosmosdb'
             version: 'v1'
             metadata: [
               {
-                name: 'accountName'
-                value: '${StorageAccount_Name_resource.name}'
+                name: 'url'
+                value: 'https://grworkflow.documents.azure.com:443/'
               }
               {
-                name: 'accountKey'
-                secretRef: 'storage-key'
+                name: 'masterKey'
+                secretRef: 'master-key'
               }
               {
-                name: 'containerName'
-                value:'dapr-store'
+                name: 'database'
+                value:'store'
+              }
+              {
+                name: 'collection'
+                value:'dapr'
               }
             ]
           }
