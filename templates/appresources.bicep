@@ -19,7 +19,7 @@ resource StorageAccount_Name_resource 'Microsoft.Storage/storageAccounts@2021-01
 }
 
 resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
-  name: 'todoapi'
+  name: 'demoactorapi'
   kind: 'containerapp'
   location: location
   properties: {
