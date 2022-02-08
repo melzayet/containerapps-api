@@ -3,15 +3,12 @@ using Dapr.Actors.Client;
 using Microsoft.EntityFrameworkCore;
 using MyActor.Interfaces;
 using MyActorService;
-using Dapr.Client;
-
-//wait for Dapr service init
-using var client = new DaprClientBuilder().Build();
-await client.CheckHealthAsync();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddDaprClient();
+Console.WriteLine($"Application Name: {builder.Environment.ApplicationName}");
 
 builder.Services.AddActors(options =>
 {
