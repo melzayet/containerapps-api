@@ -54,8 +54,9 @@ namespace DemoActorApi.Controllers
             var proxy = ActorProxy.Create<IDemoActor>(actorId, "DemoActor");
 
             try{
-                MyData currentData = await proxy.GetData();
+                MyData currentData = await proxy.GetData();                
                 if(currentData != null){
+                    Console.WriteLine("Points: " + currentData.Points + ", Highest Temp: " + currentData.HighestTemp);
                     points = currentData.Points.HasValue ? currentData.Points.Value : 0;
                     if(weatherForecast.TemperatureC > currentData.HighestTemp)
                         highestTemp = weatherForecast.TemperatureC;
