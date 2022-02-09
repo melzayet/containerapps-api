@@ -24,8 +24,14 @@ This quick demo shows how to build an API using Azure Container Apps. The API in
 ```json
 {
         "date": "2021-07-16T19:04:05.7257911-06:00",
-        "temperatureC": 52,
+        "temperatureC": 45,
         "temperatureF": 125,
-        "summary": "Mild"
+        "summary": "Mild",
+        "city": "cairo"
 }
 ```
+
+2. Using a browser or an HTTP client make an HTTP Get request to https://<container-app-url>/weatherforecast/cairo. This will return number of data points and highest temperature recorded for this city. Try submitting more POST requests to this city and other cities. 
+
+Note: Every city here is represented as a Virtual Actor
+

@@ -28,11 +28,11 @@ namespace DemoActorApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<string> Get()
+        [HttpGet("{city}")]
+        public async Task<string> Get(string city)
         {
           // Create an actor Id.
-            var actorId = new ActorId("abc");
+            var actorId = new ActorId(city);
 
             // Make strongly typed Actor calls with Remoting.
             // DemoActor is the type registered with Dapr runtime in the service.
@@ -57,7 +57,7 @@ namespace DemoActorApi.Controllers
             int points =0, highestTemp= 0;
 
             // Create an actor Id.
-            var actorId = new ActorId("abc");
+            var actorId = new ActorId(weatherForecast.City);
 
             // Make strongly typed Actor calls with Remoting.
             // DemoActor is the type registered with Dapr runtime in the service.
