@@ -53,4 +53,4 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |                        
-            az deployment group create -g ${{ secrets.TODO_RG }}  --template-file templates/appresources.bicep --parameters environmentName=${{ secrets.CA_ENV }} imageNameActor=${{ secrets.REGISTRY_USERNAME }}/demoactor:${{ github.sha }} imageNameActorApi=${{ secrets.REGISTRY_USERNAME }}/demoactorapi:${{ github.sha }}
+            az deployment group create -g ${{ secrets.CA_RG }}  --template-file templates/appresources.bicep --parameters environmentName=${{ secrets.CA_ENV }} imageNameActor=${{ secrets.REGISTRY_USERNAME }}/demoactor:${{ github.sha }} imageNameActorApi=${{ secrets.REGISTRY_USERNAME }}/demoactorapi:${{ github.sha }}
