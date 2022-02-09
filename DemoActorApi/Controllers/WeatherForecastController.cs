@@ -59,6 +59,7 @@ namespace DemoActorApi.Controllers
                     points = currentData.Points.HasValue ? currentData.Points.Value : 0;
                     if(weatherForecast.TemperatureC > currentData.HighestTemp)
                         highestTemp = weatherForecast.TemperatureC;
+                    else highestTemp = -1;
                 }
             }
             catch(Exception ex)
@@ -67,9 +68,12 @@ namespace DemoActorApi.Controllers
             }
             var data = new MyData()
             {
-                Points = points++,
-                HighestTemp = highestTemp
+                Points = ++points
             };
+            if(highestTemp != -1)
+            {
+                data.HighestTemp = highestTemp;
+            }
 
             Console.WriteLine("Making call using actor proxy to save data.");
             await proxy.SaveData(data);
