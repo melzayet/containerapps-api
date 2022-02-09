@@ -79,7 +79,8 @@ namespace DemoActorApi.Controllers
             }
             var data = new MyData()
             {
-                Points = ++points
+                Points = ++points,
+                HighestTemp = highestTemp
             };
           
 
