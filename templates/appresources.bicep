@@ -3,19 +3,61 @@ param location string = resourceGroup().location
 param revisionMode string = 'Single'
 param imageNameActorApi string
 param imageNameActor string
-param cosmosMasterKey string
 
-resource StorageAccount_Name_resource 'Microsoft.Storage/storageAccounts@2021-01-01' = {
-  name: replace('${resourceGroup().name}-dapr-store', '-', '')
-  location: location
-  sku: {
-    name: 'Standard_LRS'    
+@description('Cosmos DB account name, max length 44 characters, lowercase')
+param accountName string = 'sql-${uniqueString(resourceGroup().id)}'
+var accountName_var = toLower(accountName)
+
+@description('Maximum throughput for the container')
+@minValue(4000)
+@maxValue(1000000)
+param autoscaleMaxThroughput int = 4000
+
+resource accountName_resource 'Microsoft.DocumentDB/databaseAccounts@2021-01-15' = {
+  name: accountName_var
+  kind: 'GlobalDocumentDB'
+  location: 'NorthEurope'
+  properties: {  
+    databaseAccountOfferType: 'Standard'
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: 'NorthEurope'
+      }
+
+    ] 
   }
-  kind: 'StorageV2'
+}
+
+resource accountName_databaseName 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2021-01-15' = {
+  parent: accountName_resource
+  name: 'store'
   properties: {
-    minimumTlsVersion: 'TLS1_2'
-    supportsHttpsTrafficOnly: true
-    accessTier: 'Hot'
+    resource: {
+      id: 'store'
+    }
+  }
+}
+
+resource accountName_databaseName_containerName 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2021-01-15' = {
+  parent: accountName_databaseName
+  name: 'dapr'
+  properties: {
+    resource: {
+      id: 'dapr'
+      partitionKey: {
+        paths: [
+          '/partitionKey'
+        ]
+        kind: 'Hash'
+      }                  
+    }
+    options: {
+      autoscaleSettings: {
+        maxThroughput: autoscaleMaxThroughput
+      }
+    }
   }
 }
 
@@ -34,7 +76,7 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
       secrets: [
         {
           name: 'master-key'
-          value: cosmosMasterKey
+          value: accountName_resource.listKeys().primaryMasterKey
         }
       ]        
     }
