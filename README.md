@@ -1,6 +1,6 @@
 # Azure Container Apps - API & Dapr Actors Sample
 
-This quick demo shows how to build an API using Azure Container Apps. The API invokes Dapr actors hosted on sidecar container. Both the API and Actors runtime are scaled based on number of concurrent HTTP requests
+This quick demo shows how to host an API using Azure Container Apps. The API invokes Dapr actors hosted on sidecar container. Both the API and Actors runtime are scaled based on number of concurrent HTTP requests
 
 ## Getting Started
 
