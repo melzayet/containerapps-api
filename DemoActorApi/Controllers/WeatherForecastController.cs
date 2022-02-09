@@ -54,7 +54,7 @@ namespace DemoActorApi.Controllers
         [HttpPost]
         public async Task<string> SetWeatherData(WeatherForecast weatherForecast)
         {                                     
-            int points =0, highestTemp= 0;
+            int points = 0, highestTemp= weatherForecast.TemperatureC;
 
             // Create an actor Id.
             var actorId = new ActorId(weatherForecast.City);
@@ -70,7 +70,7 @@ namespace DemoActorApi.Controllers
                     points = currentData.Points.HasValue ? currentData.Points.Value : 0;
                     if(weatherForecast.TemperatureC > currentData.HighestTemp)
                         highestTemp = weatherForecast.TemperatureC;
-                    else highestTemp = currentData.HighestTemp.HasValue ? currentData.HighestTemp.Value : 0;
+                    else highestTemp = currentData.HighestTemp.HasValue ? currentData.HighestTemp.Value : weatherForecast.TemperatureC;
                 }
             }
             catch(Exception ex)

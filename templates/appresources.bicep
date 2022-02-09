@@ -92,8 +92,8 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
         }
       ]
       scale: {
-        minReplicas: 1
-        maxReplicas: 2
+        minReplicas: 2
+        maxReplicas: 4
         rules: [
           {
             name: 'httpscalingrule'
