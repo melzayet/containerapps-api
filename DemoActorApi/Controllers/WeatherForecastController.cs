@@ -29,16 +29,26 @@ namespace DemoActorApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<string> Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+          // Create an actor Id.
+            var actorId = new ActorId("abc");
+
+            // Make strongly typed Actor calls with Remoting.
+            // DemoActor is the type registered with Dapr runtime in the service.
+            var proxy = ActorProxy.Create<IDemoActor>(actorId, "DemoActor");
+
+            try{
+                MyData currentData = await proxy.GetData();                
+                if(currentData != null){
+                    return "Points: " + currentData.Points + ", Highest Temp: " + currentData.HighestTemp;
+                }
+            }
+              catch(Exception ex)
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                Console.WriteLine(ex.ToString());
+            }
+            return "no data";
         }
 
         [HttpPost]
@@ -60,7 +70,7 @@ namespace DemoActorApi.Controllers
                     points = currentData.Points.HasValue ? currentData.Points.Value : 0;
                     if(weatherForecast.TemperatureC > currentData.HighestTemp)
                         highestTemp = weatherForecast.TemperatureC;
-                    else highestTemp = -1;
+                    else highestTemp = currentData.HighestTemp.HasValue ? currentData.HighestTemp.Value : 0;
                 }
             }
             catch(Exception ex)
@@ -71,10 +81,7 @@ namespace DemoActorApi.Controllers
             {
                 Points = ++points
             };
-            if(highestTemp != -1)
-            {
-                data.HighestTemp = highestTemp;
-            }
+          
 
             Console.WriteLine("Making call using actor proxy to save data.");
             await proxy.SaveData(data);
