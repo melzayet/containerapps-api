@@ -1,3 +1,5 @@
+@description('Specifies the location for resources.')
+
 param environmentName string
 param location string = resourceGroup().location
 param revisionMode string = 'Single'
@@ -16,14 +18,14 @@ param autoscaleMaxThroughput int = 4000
 resource accountName_resource 'Microsoft.DocumentDB/databaseAccounts@2021-01-15' = {
   name: accountName_var
   kind: 'GlobalDocumentDB'
-  location: 'NorthEurope'
+  location: location
   properties: {  
     databaseAccountOfferType: 'Standard'
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: 'NorthEurope'
+        locationName: location
       }
 
     ] 
