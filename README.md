@@ -9,8 +9,6 @@ This quick demo shows how to host an API using Azure Container Apps. The API inv
 2. (optional) Create a Container Apps Environment if no one exists: https://docs.microsoft.com/en-us/azure/container-apps/microservices-dapr?tabs=bash#create-an-environment
 
 3. Create GitHub secret for
-    - "CA_ENV": Container Apps Environment name
-    - "CA_RG": Azure Resource Group for Container Apps Environment
     - "REGISTRY_USERNAME": Docker Hub username
     - "REGISTRY_PASSWORD": Docker Hub password
     - "CLIENT_ID": Client ID of Azure AD application. This demo uses Workload Identity Federation. Please read more on how to set it up: https://docs.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-create-trust-github?tabs=azure-portal

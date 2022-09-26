@@ -1,6 +1,6 @@
 @description('Specifies the location for resources.')
 
-param environmentName string
+param environmentName string = 'capp-env-actors-demo'
 param location string = resourceGroup().location
 param revisionMode string = 'Single'
 param imageNameActorApi string
@@ -9,11 +9,6 @@ param imageNameActor string
 @description('Cosmos DB account name, max length 44 characters, lowercase')
 param accountName string = 'sql-${uniqueString(resourceGroup().id)}'
 var accountName_var = toLower(accountName)
-
-@description('Maximum throughput for the container')
-@minValue(4000)
-@maxValue(1000000)
-param autoscaleMaxThroughput int = 4000
 
 resource accountName_resource 'Microsoft.DocumentDB/databaseAccounts@2021-01-15' = {
   name: accountName_var
@@ -27,7 +22,11 @@ resource accountName_resource 'Microsoft.DocumentDB/databaseAccounts@2021-01-15'
         isZoneRedundant: false
         locationName: location
       }
-
+    ]
+    capabilities: [
+      {
+        name: 'EnableServerless'
+      }    
     ] 
   }
 }
@@ -54,33 +53,102 @@ resource accountName_databaseName_containerName 'Microsoft.DocumentDB/databaseAc
         ]
         kind: 'Hash'
       }                  
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
-      }
-    }
+    }   
   }
 }
 
-resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
-  name: 'demoactorapi'
-  kind: 'containerapp'
+var logAnalyticsWorkspaceName = 'logs-${environmentName}'
+var appInsightsName = 'appins-${environmentName}'
+
+resource logAnalyticsWorkspace'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
+  name: logAnalyticsWorkspaceName
+  location: location
+  properties: any({
+    retentionInDays: 30
+    features: {
+      searchVersion: 1
+    }
+    sku: {
+      name: 'PerGB2018'
+    }
+  })
+}
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: appInsightsName
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+  }
+}
+resource environment 'Microsoft.App/managedEnvironments@2022-03-01' = {
+  name: environmentName
   location: location
   properties: {
-    kubeEnvironmentId: resourceId('Microsoft.Web/kubeEnvironments', environmentName)
-    configuration: {
-      activeRevisionsMode: revisionMode
-      ingress: {
-        external: true
-        targetPort: 5005
-      }      
+    daprAIInstrumentationKey: reference(appInsights.id, '2020-02-02').InstrumentationKey
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: reference(logAnalyticsWorkspace.id, '2021-06-01').customerId
+        sharedKey: listKeys(logAnalyticsWorkspace.id, '2021-06-01').primarySharedKey
+      }
+    }
+  }
+  resource daprComponent 'daprComponents@2022-03-01' = {
+    name: 'statestore'
+    properties: {
+      componentType: 'state.azure.cosmosdb'
+      ignoreErrors: false
+      initTimeout: '5s'
+      version: 'v1'
       secrets: [
         {
           name: 'master-key'
           value: accountName_resource.listKeys().primaryMasterKey
         }
-      ]        
+      ]
+      metadata: [
+        {
+          name: 'url'
+          value: 'https://${accountName_resource.name}.documents.azure.com:443/'
+        }
+        {
+          name: 'masterKey'
+          secretRef: 'master-key'
+        }
+        {
+          name: 'database'
+          value:'store'
+        }
+        {
+          name: 'collection'
+          value:'dapr'
+        }
+        {
+          name: 'actorStateStore'
+          value: 'true'
+        }              
+      ]
+      scopes: [
+        'demoactorapi'
+      ]
+    }
+  }
+}
+
+resource httpApiResource 'Microsoft.App/containerApps@2022-03-01' = {
+  name: 'demoactorapi'
+  location: location
+  properties: {
+    managedEnvironmentId: resourceId('Microsoft.App/kubeEnvironments', environmentName)
+    configuration: {
+      activeRevisionsMode: revisionMode
+      ingress: {
+        external: true
+        targetPort: 5005
+      }             
     }
     template: {
       containers: [
@@ -104,40 +172,6 @@ resource httpApiResource 'Microsoft.Web/containerApps@2021-03-01' = {
                       concurrentRequests: '10'
                   }
               }
-          }
-        ]
-      }
-      dapr: {
-        enabled: true      
-        appId: 'demoactor'       
-        appPort: 5000
-        components: [
-          {
-            name: 'statestore'
-            type: 'state.azure.cosmosdb'
-            version: 'v1'
-            metadata: [
-              {
-                name: 'url'
-                value: 'https://${accountName_resource.name}.documents.azure.com:443/'
-              }
-              {
-                name: 'masterKey'
-                secretRef: 'master-key'
-              }
-              {
-                name: 'database'
-                value:'store'
-              }
-              {
-                name: 'collection'
-                value:'dapr'
-              }
-              {
-                name: 'actorStateStore'
-                value: 'true'
-              }              
-            ]
           }
         ]
       }
