@@ -13,7 +13,10 @@ This quick demo shows how to host an API using Azure Container Apps. The API inv
     - "CA_RG": Azure Resource Group for Container Apps Environment
     - "REGISTRY_USERNAME": Docker Hub username
     - "REGISTRY_PASSWORD": Docker Hub password
-    - "AZURE_CREDENTIALS": JSON string returned by 'az ad sp create-for-rbac' command. As an enhancement, it's recommended to replace this method in GitHub workflow with Workload Identity Federation: https://docs.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-create-trust-github?tabs=azure-portal
+    - "CLIENT_ID": Client ID of Azure AD application. This demo uses Workload Identity Federation. Please read more on how to set it up: https://docs.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-create-trust-github?tabs=azure-portal
+    - "TENANT_ID": Id of Azure AD tenant where the demo will be deployed to
+    - "SUB_ID": Id of subscription where the demo will be deployed to
+
 
 4. Make a change like adding a comment to a solution file. This will trigger an application deployment through a GitHub workflow. The GitHub workflow uses a bicep template to deploy the Container App as well as a Cosmos DB account for saving actors' state
 
