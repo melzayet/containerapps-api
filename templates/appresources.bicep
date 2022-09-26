@@ -132,23 +132,29 @@ resource environment 'Microsoft.App/managedEnvironments@2022-03-01' = {
         }              
       ]
       scopes: [
-        'demoactorapi'
+        'demoactor'
       ]
     }
   }
 }
 
 resource httpApiResource 'Microsoft.App/containerApps@2022-03-01' = {
-  name: 'demoactorapi'
+  name: 'demoactor'
   location: location
   properties: {
-    managedEnvironmentId: resourceId('Microsoft.App/kubeEnvironments', environmentName)
+    managedEnvironmentId: environment.id
     configuration: {
       activeRevisionsMode: revisionMode
       ingress: {
         external: true
         targetPort: 5005
-      }             
+      }
+      dapr: {
+        enabled: true      
+        appId: 'demoactor'
+        appProtocol: 'http'      
+        appPort: 5000
+      }
     }
     template: {
       containers: [
