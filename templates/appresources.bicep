@@ -152,7 +152,6 @@ resource httpApiResource 'Microsoft.App/containerApps@2022-03-01' = {
       dapr: {
         enabled: true      
         appId: 'demoactor'
-        appProtocol: 'http'      
         appPort: 5000
       }
     }
