@@ -109,7 +109,7 @@ resource environment 'Microsoft.App/managedEnvironments@2022-03-01' = {
           value: accountName_resource.listKeys().primaryMasterKey
         }
       ]
-      env: [
+      metadata: [
         {
           name: 'url'
           value: 'https://${accountName_resource.name}.documents.azure.com:443/'
